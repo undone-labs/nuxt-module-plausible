@@ -1,27 +1,21 @@
-/*
- *
- * 🔌 [Plugin | NuxtModulePlausible] Methods
- *
- */
-
-console.log(`🔌 [Plugin | Plausible] Plausible`)
-
 // ///////////////////////////////////////////////////////////////////// Imports
 // -----------------------------------------------------------------------------
-import Config from '@/nuxt.config'
+import { defineNuxtPlugin } from '#imports'
 
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
-export default ({ app }) => {
+export default defineNuxtPlugin((nuxtApp) => {
 
   // Do not fire Plausible if not in production mode
   if (process.env.NODE_ENV !== 'production') {
     return
   }
 
+  const router = nuxtApp.$router
+  const config = nuxtApp.$config.public.siteUrl
   let isInitialPageLoad = true
 
-  app.router.afterEach((to, from) => {
+  router.afterEach((to) => {
 
     // Ignore initial page because it's fired in the head
     if (isInitialPageLoad) {
@@ -36,8 +30,8 @@ export default ({ app }) => {
         (window.plausible.q = window.plausible.q || []).push(arguments)
       }
       window.plausible('pageview', {
-        url: `https://ecosystem.filecoin.io${to.fullPath}`
+        url: `${config.public.siteUrl}${to.fullPath}`
       })
     }
   })
-}
+})
