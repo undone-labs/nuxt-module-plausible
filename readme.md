@@ -30,12 +30,19 @@ export default {
 
 ### Environment
 
-The `NODE_ENV` environment variable toggles Plausible based on environment. Plausible will only be loaded when `"NODE_ENV" = "production"`.
+The `NODE_ENV` environment variable toggles Plausible based on environment. Plausible will be loaded when `"NODE_ENV" = "production"`.
+
+```dotenv
+NODE_ENV=production
+```
+
+When working in any other environment Plausible will only be loaded if localhost tracking is explicitly enabled in the `nuxt.config`
 
 ```js
 export default {
-  publicRuntimeConfig: {
-    nodeEnv: process.env.NODE_ENV
+  plausible: {
+    include: true,
+    trackLocalhost: true
   }
 }
 ```
