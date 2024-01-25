@@ -7,8 +7,11 @@ import { defineNuxtPlugin } from '#imports'
 export default defineNuxtPlugin((nuxtApp) => {
 
   // Do not fire Plausible if not in production mode
+  // unless tracking localhost is explicitly enabled in the config
   if (process.env.NODE_ENV !== 'production') {
-    return
+    if (!nuxtApp.$config.public.plausible.trackLocalhost) {
+      return
+    }
   }
 
   const router = nuxtApp.$router
