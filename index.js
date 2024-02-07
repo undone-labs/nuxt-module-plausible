@@ -1,39 +1,49 @@
-/*
- *
- * 📦 [Module] NuxtModulePlausible
- *
- */
+console.log('📦 [load:module] nuxt-module-plausible')
 
- // ///////////////////////////////////////////////////////////////////// Imports
- // -----------------------------------------------------------------------------
- // ///////////////////////////////////////////////////////////////////// General
- import Path from 'path'
+// ///////////////////////////////////////////////////////////////////// Imports
+// -----------------------------------------------------------------------------
+import Path from 'path'
 
- // ///////////////////////////////////////////////////////////////////// Plugins
- const plugins = [
-   {
-     src: Path.resolve(__dirname, 'plugin.js'),
-     filename: 'nuxt-module-plausible/index.js'
-   }
- ]
- 
- // ///////////////////////////////////////////////////////////// registerPlugins
- const registerPlugins = (instance, next) => {
-   return new Promise((next) => {
-     plugins.forEach((plugin) => {
-       instance.addPlugin(plugin)
-     })
-     if (next) { return next() }
-   })
- }
- 
- // ///////////////////////////////////////////////////////////////////// Liftoff
- // -----------------------------------------------------------------------------
- export default async function () {
-   if (this.options.plausible.include) {
-     await registerPlugins(this, () => {
-       console.log(`📦 [Module] Plausible`)
-     })
-   }
- }
- 
+import { defineNuxtModule, addPlugin } from '@nuxt/kit'
+
+// ////////////////////////////////////////////////////////////////////// Config
+// -----------------------------------------------------------------------------
+const meta = {
+  name: '@undone-labs/nuxt-module-plausible',
+  configKey: 'nuxtModulePlausible',
+  compatibility: {
+    nuxt: '^3.0.0'
+  }
+}
+
+// /////////////////////////////////////////////////////////////////// Functions
+// -----------------------------------------------------------------------------
+// ///////////////////////////////////////////////////////////////////// Plugins
+const plugins = [
+  {
+    src: Path.resolve(__dirname, 'plugin.js'),
+    filename: 'nuxt-module-plausible/index.js'
+  }
+]
+
+// ///////////////////////////////////////////////////////////// registerPlugins
+const registerPlugins = () => {
+    plugins.forEach((plugin) => {
+      addPlugin(plugin)
+      console.log('🔌 [nuxt-module-plausible:plugin]')
+    })
+}
+
+// /////////////////////////////////////////////////////////////////////// Setup
+// -----------------------------------------------------------------------------
+const setup = async (_, nuxt) => {
+  if (nuxt.options.plausible.include) {
+    registerPlugins()
+  }
+}
+// ////////////////////////////////////////////////////////////////////// Export
+// -----------------------------------------------------------------------------
+export default defineNuxtModule({
+  meta,
+  setup
+})
