@@ -4,21 +4,20 @@ import { defineNuxtPlugin } from '#imports'
 
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(() => {
+  if (process.server) { return } // only run client-side
 
-  // Do not fire Plausible if not in production mode
-  // unless tracking localhost is explicitly enabled in the config
-  if (process.env.NODE_ENV !== 'production') {
-    if (!nuxtApp.$config.public.plausible.trackLocalhost) {
-      return
-    }
+  const router = useRouter()
+  const config = useRuntimeConfig().public
+
+  // Only run in production OR if trackLocalhost is explcitly set to true
+  if (process.env.NODE_ENV !== 'production' || !config.trackLocalhost === true) {
+    return
   }
 
-  const router = nuxtApp.$router
-  const config = nuxtApp.$config.public.siteUrl
   let isInitialPageLoad = true
 
-  router.afterEach((to) => {
+  router.afterEach(to => {
 
     // Ignore initial page because it's fired in the head
     if (isInitialPageLoad) {
@@ -26,15 +25,13 @@ export default defineNuxtPlugin((nuxtApp) => {
       return
     }
 
-    // Check if we're on client-side
-    if (process.client) {
-      // Track virtual navigation changes
-      window.plausible = window.plausible || function() {
-        (window.plausible.q = window.plausible.q || []).push(arguments)
-      }
-      window.plausible('pageview', {
-        url: `${config.public.siteUrl}${to.fullPath}`
-      })
+    // Track virtual navigation changes
+    window.plausible = window.plausible || function () {
+      (window.plausible.q = window.plausible.q || []).push(arguments)
     }
+
+    window.plausible('pageview', {
+      url: `${config.siteUrl}${to.fullPath}`
+    })
   })
 })
