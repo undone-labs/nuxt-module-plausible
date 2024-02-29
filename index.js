@@ -28,10 +28,10 @@ const plugins = [
 
 // ///////////////////////////////////////////////////////////// registerPlugins
 const registerPlugins = () => {
-    plugins.forEach((plugin) => {
-      addPlugin(plugin)
-      console.log('🔌 [nuxt-module-plausible:plugin]')
-    })
+  plugins.forEach((plugin) => {
+    addPlugin(plugin)
+    console.log('🔌 [nuxt-module-plausible:plugin]')
+  })
 }
 
 // /////////////////////////////////////////////////////////////////////// Setup
